@@ -1,0 +1,17 @@
+{
+  "name": "@instago/openai",
+  "version": "1.0.0",
+  "description": "Module openai",
+  "main": "index.js",
+  "type": "commonjs",
+  "license": "SEE LICENSE IN LICENSE",
+  "keywords": [
+    "instago",
+    "openai"
+  ],
+  "files": [
+    "index.js",
+    "ReadMe.MD",
+    "LICENSE"
+  ]
+}
