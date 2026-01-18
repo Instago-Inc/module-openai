@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>openai Documentation</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 48px 24px;
+        font-family: Arial, sans-serif;
+        background: #0f172a;
+        color: #e2e8f0;
+      }
+      main {
+        max-width: 760px;
+        margin: 0 auto;
+      }
+      h1 {
+        margin: 0 0 12px;
+        font-size: 28px;
+      }
+      .intro {
+        font-size: 16px;
+        color: #e2e8f0;
+      }
+      p {
+        margin: 0 0 16px;
+        color: #cbd5f5;
+      }
+      ul {
+        margin: 12px 0 0;
+        padding-left: 18px;
+      }
+      a {
+        color: #93c5fd;
+      }
+      .section {
+        margin-top: 28px;
+      }
+      .muted {
+        color: #94a3b8;
+        font-size: 14px;
+        margin: 6px 0 0;
+      }
+      .code {
+        background: #0b1220;
+        border: 1px solid #1e293b;
+        border-radius: 10px;
+        padding: 16px;
+        white-space: pre-wrap;
+        word-break: break-word;
+        font-size: 13px;
+        line-height: 1.5;
+        color: #e2e8f0;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>module/openai - V8 module</h1>
+      <p class="intro">Make OpenAI chat calls from workflows without extra glue code. This module keeps the surface area small while handling the common JSON-response pattern and basic streaming support.</p>
+      <p class="muted">Learn more at <a href="https://instago.ai" target="_blank" rel="noopener">https://instago.ai</a>.</p>
+      <div class="section">
+        <h2>Technical reference</h2>
+        <h1>module/openai - V8 module</h1>
+<p>Make OpenAI chat calls from workflows without extra glue code. This module keeps the surface area small while handling the common JSON-response pattern and basic streaming support.</p>
+<p>It is designed for the embedded V8 runtime used by Instago. Learn more at https://instago.ai.</p>
+<h2>Technical reference</h2>
+<p>Exports</p>
+<ul>
+<li><code>configure({ apiKey?, model?, baseUrl? })</code></li>
+<li><code>chat({ apiKey?, model?, messages?, system?, user?, response_format?, baseUrl?, temperature?, debug? })</code></li>
+<li><code>chatStream({ apiKey?, model?, messages?, system?, user?, response_format?, baseUrl?, temperature?, onToken?, onDone?, debug? })</code></li>
+<li><code>chatJSON({ apiKey?, model?, system?, user?, baseUrl?, temperature?, debug? })</code></li>
+</ul>
+<p>Usage</p>
+<ul>
+<li><code>chat</code> returns the raw OpenAI JSON response.</li>
+<li><code>chatStream</code> streams tokens and returns <code>{ text }</code>; <code>onToken(delta)</code> fires per chunk, <code>onDone(text)</code> fires at completion.</li>
+<li><code>chatJSON</code> enforces JSON-mode, strips code fences, and returns <code>{ raw, data }</code> where <code>data</code> is parsed JSON or <code>undefined</code>.</li>
+<li>Pass <code>messages</code> as an array of <code>{ role, content }</code> objects, or supply <code>system</code> and <code>user</code> strings.</li>
+</ul>
+<p>Configuration</p>
+<ul>
+<li><code>configure({ apiKey?, model?, baseUrl? })</code> sets shared defaults for the module.</li>
+<li><code>apiKey</code> can also be provided per call; if omitted, the module reads <code>openai.apiKey</code> from <code>env</code>.</li>
+<li><code>debug</code> enables extra logs and also reads <code>openai.debug</code> from <code>env</code>.</li>
+</ul>
+<p>Examples</p>
+<pre class="code"><code>
+const openai = require(&#x27;openai@latest&#x27;);
+
+openai.configure({ apiKey: env.openai.apiKey, model: &#x27;gpt-4o-mini&#x27; });
+
+const result = await openai.chatJSON({
+  system: &#x27;You are concise.&#x27;,
+  user: &#x27;Return {&quot;ok&quot;: true}&#x27;,
+  debug: false
+});
+</code></pre>
+<pre class="code"><code>
+const openai = require(&#x27;openai@latest&#x27;);
+
+const res = await openai.chatStream({
+  apiKey: env.openai.apiKey,
+  user: &#x27;Stream me a short poem.&#x27;,
+  onToken: (delta) =&gt; console.log(delta),
+  onDone: (text) =&gt; console.log(&#x27;done:&#x27;, text)
+});
+</code></pre>
+      </div>
+      
+    </main>
+  </body>
+</html>

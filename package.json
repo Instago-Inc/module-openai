@@ -1,6 +1,6 @@
 {
   "name": "@instago/openai",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Module openai",
   "main": "index.js",
   "type": "commonjs",

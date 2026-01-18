@@ -1,14 +1,14 @@
 // modules_cache/openai/1.0.0/index.js
 // Lightweight OpenAI helper for JSON-mode chat completions.
 // Usage:
-//   const openai = require('openai@1.0.0');
+//   const openai = require('openai@latest');
 //   openai.configure({ apiKey: '<key>', model: 'gpt-4o-mini' });
 //   const out = await openai.chatJSON({ system: 'You are...', user: 'Prompt', debug: true });
 
 (function() {
-  const j = require('json@1.0.0');
-  const httpx = require('http@1.0.0');
-  const log = require('log@1.0.0').create('openai');
+  const j = require('json@latest');
+  const httpx = require('http@latest');
+  const log = require('log@latest').create('openai');
   let cfg = {
     apiKey: null,
     model: 'gpt-4o-mini',

@@ -1,31 +1,48 @@
-# @instago/openai
+# module/openai - V8 module
 
-Call OpenAI chat models from your workflow with minimal setup. Add your API key, choose a model, and ask for plain text or JSON-formatted answers.
+Make OpenAI chat calls from workflows without extra glue code. This module keeps the surface area small while handling the common JSON-response pattern and basic streaming support.
 
-- Version: 1.0.0
-- Entry: index.js
-- Exports: `{ configure, chat, chatJSON }`
-- Dependencies: `http@1.0.0`, `json@1.0.0`, `log@1.0.0`, `env@1.0.0`
-- Env (via `env@1.0.0`): `openai.apiKey`, `openai.debug`
+It is designed for the embedded V8 runtime used by Instago. Learn more at https://instago.ai.
 
-## API
+## Technical reference
+
+Exports
 - `configure({ apiKey?, model?, baseUrl? })`
-- `chat({ messages?, system?, user?, model?, response_format?, baseUrl?, temperature?, debug? })` → raw OpenAI response
-- `chatJSON({ system, user, model?, baseUrl?, temperature?, debug? })` → `{ raw, data }` with JSON parsed content
+- `chat({ apiKey?, model?, messages?, system?, user?, response_format?, baseUrl?, temperature?, debug? })`
+- `chatStream({ apiKey?, model?, messages?, system?, user?, response_format?, baseUrl?, temperature?, onToken?, onDone?, debug? })`
+- `chatJSON({ apiKey?, model?, system?, user?, baseUrl?, temperature?, debug? })`
 
-## Example
+Usage
+- `chat` returns the raw OpenAI JSON response.
+- `chatStream` streams tokens and returns `{ text }`; `onToken(delta)` fires per chunk, `onDone(text)` fires at completion.
+- `chatJSON` enforces JSON-mode, strips code fences, and returns `{ raw, data }` where `data` is parsed JSON or `undefined`.
+- Pass `messages` as an array of `{ role, content }` objects, or supply `system` and `user` strings.
+
+Configuration
+- `configure({ apiKey?, model?, baseUrl? })` sets shared defaults for the module.
+- `apiKey` can also be provided per call; if omitted, the module reads `openai.apiKey` from `env`.
+- `debug` enables extra logs and also reads `openai.debug` from `env`.
+
+Examples
 ```js
-const openai = require('openai@1.0.0');
+const openai = require('openai@latest');
 
 openai.configure({ apiKey: env.openai.apiKey, model: 'gpt-4o-mini' });
 
-const out = await openai.chatJSON({
+const result = await openai.chatJSON({
   system: 'You are concise.',
-  user: 'Return {"ok":true}',
+  user: 'Return {"ok": true}',
   debug: false
 });
 ```
 
-## Notes
-- Uses `sys.http.fetch` via `http@1.0.0`.
-- Trims code fences from model output before JSON parse in `chatJSON`.
+```js
+const openai = require('openai@latest');
+
+const res = await openai.chatStream({
+  apiKey: env.openai.apiKey,
+  user: 'Stream me a short poem.',
+  onToken: (delta) => console.log(delta),
+  onDone: (text) => console.log('done:', text)
+});
+```
